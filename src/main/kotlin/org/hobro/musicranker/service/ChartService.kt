@@ -31,12 +31,14 @@ class ChartService(
     }
 
     fun getChart(chartId: Long): ChartDTO {
-        val chart =  chartRepository.findById(chartId).get();
+        val chart = chartRepository.findById(chartId).get()
 
         return ChartDTO(
             title = chart.title,
-            topMusics = musicRepository.findAllById(chart.topMusics?: mutableListOf()),
-            wantedMusics = musicRepository.findAllById(chart.wantedMusics?: mutableListOf())
+            topMusics = musicRepository.findAllById(chart.topMusics ?: mutableListOf())
+                .sortedBy { music -> chart.topMusics?.indexOf(music.id) },
+            wantedMusics = musicRepository.findAllById(chart.wantedMusics ?: mutableListOf())
+                .sortedBy { music -> chart.wantedMusics?.indexOf(music.id) }
         )
     }
 

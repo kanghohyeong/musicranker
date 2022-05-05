@@ -41,6 +41,16 @@ function Chart(props) {
                                     title={topMusic.title}/>
                             <p>{topMusic.title}</p>
                             <p>{topMusic.singer}</p>
+                            <div>
+                                <Vote>
+                                    <ThumbUp/>
+                                    <span>{topMusic.likeCount}</span>
+                                </Vote>
+                                <Vote>
+                                    <ThumbDown/>
+                                    <span>{topMusic.dislikeCount}</span>
+                                </Vote>
+                            </div>
                         </ChartRow>
                     )
                 })}
