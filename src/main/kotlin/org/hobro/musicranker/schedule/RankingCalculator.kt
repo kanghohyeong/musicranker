@@ -18,15 +18,14 @@ class RankingCalculator(
         val charts = chartRepository.findAll()
 
         charts.forEach { chart ->
-            // top ranking 계산
             val topMusics = musicRepository.findAllById(chart.topMusics ?: mutableListOf())
-            topMusics.sortBy { music ->
-                chart.topMusics?.indexOf(music.id)
-            }
+                .sortedBy { music ->
+                    chart.topMusics?.indexOf(music.id)
+                }.toMutableList()
             val wantedMusics = musicRepository.findAllById(chart.wantedMusics ?: mutableListOf())
-            wantedMusics.sortBy { music ->
-                chart.wantedMusics?.indexOf(music.id)
-            }
+                .sortedBy { music ->
+                    -(music.likeCount - music.dislikeCount)
+                }.toMutableList()
 
             var updatedMusics = mutableListOf<Music>()
             updatedMusics.addAll(topMusics)
@@ -35,6 +34,7 @@ class RankingCalculator(
             val newTopMusics = mutableListOf<Long>()
             val newWantedMusics = mutableListOf<Long>()
 
+            // top ranking 계산
             if (topMusics.isNotEmpty()) {
                 topMusics.reverse()
                 var lastMusic = topMusics.first()

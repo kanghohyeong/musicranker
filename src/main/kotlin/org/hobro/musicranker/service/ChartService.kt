@@ -38,7 +38,8 @@ class ChartService(
             topMusics = musicRepository.findAllById(chart.topMusics ?: mutableListOf())
                 .sortedBy { music -> chart.topMusics?.indexOf(music.id) },
             wantedMusics = musicRepository.findAllById(chart.wantedMusics ?: mutableListOf())
-                .sortedBy { music -> chart.wantedMusics?.indexOf(music.id) }
+                .sortedBy { music -> chart.wantedMusics?.indexOf(music.id) },
+            prevRanking = chart.prevTopMusics ?: mutableListOf()
         )
     }
 

@@ -8,23 +8,51 @@ import {ReactComponent as ThumbDown} from "../assets/thumb_down.svg";
 function Chart(props) {
 
     const [chart, setChart] = useState({
-        topMusics: [], title: "로딩중", wantedMusics: []
+        topMusics: [], title: "로딩중", wantedMusics: [], prevRanking: []
     });
 
     useEffect(() => {
-
         fetch("/api/chart/1")
             .then(res => {
                 if (res.ok) {
                     res.json().then(response => {
                         setChart(response);
-                        console.log(response)
                     })
                 } else {
                     alert("서버 애러. 연락 바랍니다")
                 }
             });
     }, []);
+
+    const vote = (type, musicId) => {
+        fetch(`/api/music/${musicId}/${type}`, {
+            method: 'PUT'
+        }).then(res => {
+            if (res.ok) {
+                res.json().then(response => {
+                    const topMusics = [...chart.topMusics];
+                    const wantedMusics = [...chart.wantedMusics];
+
+                    if (topMusics.some(music => music.id === musicId)) {
+                        if (type === "like")
+                            topMusics[topMusics.findIndex(music => music.id === musicId)].likeCount = response;
+                        else if (type === "dislike")
+                            topMusics[topMusics.findIndex(music => music.id === musicId)].dislikeCount = response;
+                    }
+                    if (wantedMusics.some(music => music.id === musicId)) {
+                        if (type === "like")
+                            wantedMusics[wantedMusics.findIndex(music => music.id === musicId)].likeCount = response;
+                        else if (type === "dislike")
+                            wantedMusics[wantedMusics.findIndex(music => music.id === musicId)].dislikeCount = response;
+                    }
+
+                    setChart({...chart, topMusics: [...topMusics], wantedMusics: [...wantedMusics]});
+                })
+            } else {
+                alert("서버 애러");
+            }
+        })
+    }
 
 
     return (
@@ -33,9 +61,22 @@ function Chart(props) {
             <ChartTable>
                 <h3>Top 100</h3>
                 {chart.topMusics.map((topMusic, idx) => {
+                    const prevRank = chart.prevRanking.findIndex(id => id === topMusic.id);
+                    let wave = "";
+                    if (prevRank > idx) wave = "UP";
+                    else if (prevRank === idx) wave = "STAY";
+                    else wave = "DOWN";
+
                     return (
                         <ChartRow key={idx}>
-                            <p>{idx + 1}위</p>
+                            <div>
+                                <p>{idx + 1}위</p>
+                                {{
+                                    'UP':<WaveIndicator color={"red"}>상승</WaveIndicator>,
+                                    "STAY":<WaveIndicator color={"black"}>--</WaveIndicator>,
+                                    "DOWN":<WaveIndicator color={"blue"}>하락</WaveIndicator>,
+                                }[wave]}
+                            </div>
                             <iframe width={"200px"} height={"100px"}
                                     src={"https://www.youtube.com/embed/" + topMusic.videoId}
                                     title={topMusic.title}/>
@@ -43,11 +84,11 @@ function Chart(props) {
                             <p>{topMusic.singer}</p>
                             <div>
                                 <Vote>
-                                    <ThumbUp/>
+                                    <ThumbUp onClick={() => vote("like", topMusic.id)}/>
                                     <span>{topMusic.likeCount}</span>
                                 </Vote>
                                 <Vote>
-                                    <ThumbDown/>
+                                    <ThumbDown onClick={() => vote("dislike", topMusic.id)}/>
                                     <span>{topMusic.dislikeCount}</span>
                                 </Vote>
                             </div>
@@ -60,7 +101,6 @@ function Chart(props) {
                 {chart.wantedMusics.map((wantedMusic, idx) => {
                     return (
                         <ChartRow key={idx}>
-                            <p>{idx}위</p>
                             <iframe width={"200px"} height={"100px"}
                                     src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
                                     title={wantedMusic.title}/>
@@ -68,11 +108,11 @@ function Chart(props) {
                             <p>{wantedMusic.singer}</p>
                             <div>
                                 <Vote>
-                                    <ThumbUp/>
+                                    <ThumbUp onClick={() => vote("like", wantedMusic.id)}/>
                                     <span>{wantedMusic.likeCount}</span>
                                 </Vote>
                                 <Vote>
-                                    <ThumbDown/>
+                                    <ThumbDown onClick={() => vote("dislike", wantedMusic.i)}/>
                                     <span>{wantedMusic.dislikeCount}</span>
                                 </Vote>
                             </div>
@@ -90,7 +130,6 @@ const ChartBackgound = styled.div`
   flex-direction: column;
   min-width: ${STYLE.MIN_WIDTH};
   width: 100vw;
-  height: 100vh;
   justify-content: center;
   align-items: center;
 `
@@ -132,7 +171,10 @@ const Vote = styled.div`
   svg:hover {
     fill: red;
   }
+`
 
+const WaveIndicator = styled.p`
+  color: ${props => props.color};
 `
 
 export default Chart;
