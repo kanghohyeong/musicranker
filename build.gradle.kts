@@ -63,6 +63,7 @@ task<Exec>("installReact") {
     group = BasePlugin.BUILD_GROUP
     inputs.dir(frontendDir)
 
+    commandLine("npm","audit", "fix")
     commandLine("npm", "install")
 }
 
