@@ -1,6 +1,7 @@
 package org.hobro.musicranker.service
 
 import org.hobro.musicranker.controller.model.MusicRequest
+import org.hobro.musicranker.model.ChartDTO
 import org.hobro.musicranker.repository.ChartRepository
 import org.hobro.musicranker.repository.MusicRepository
 import org.hobro.musicranker.repository.entity.Music
@@ -27,6 +28,16 @@ class ChartService(
         }
 
         chartRepository.save(chart)
+    }
+
+    fun getChart(chartId: Long): ChartDTO {
+        val chart =  chartRepository.findById(chartId).get();
+
+        return ChartDTO(
+            title = chart.title,
+            topMusics = musicRepository.findAllById(chart.topMusics?: mutableListOf()),
+            wantedMusics = musicRepository.findAllById(chart.wantedMusics?: mutableListOf())
+        )
     }
 
 }

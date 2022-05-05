@@ -1,101 +1,126 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-
-const MIN_WIDTH = "800px";
+import {STYLE} from "../const/style";
+import WantedForm from "./WantedForm";
+import {ReactComponent as ThumbUp} from "../assets/thumb_up.svg";
+import {ReactComponent as ThumbDown} from "../assets/thumb_down.svg";
 
 function Chart(props) {
 
-  const [wantedMusic, setWantedMusic] = useState(
-      {singer: "", title: "", videoId: ""});
+    const [chart, setChart] = useState({
+        topMusics: [], title: "로딩중", wantedMusics: []
+    });
 
-  const addWantedMusic = (e) => {
-    e.preventDefault();
+    useEffect(() => {
 
-    for (let value of Object.values(wantedMusic)) {
-      value.trim();
-      if (!value) {
-        alert("부적절한 입력입니다");
-        return;
-      }
-    }
+        fetch("/api/chart/1")
+            .then(res => {
+                if (res.ok) {
+                    res.json().then(response => {
+                        setChart(response);
+                        console.log(response)
+                    })
+                } else {
+                    alert("서버 애러. 연락 바랍니다")
+                }
+            });
+    }, []);
 
-    fetch("/api/chart/1/wanted", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(wantedMusic)
-    }).then(res => {
-      if (res.ok) {
-        window.location.reload();
-      } else {
-        alert("서버 애러. 연락 바랍니다")
-      }
-    })
-  }
 
-  return (
-      <ChartBackgound>
-        <h1>111 국힙 랭킹</h1>
-        <PostForm>
-          <InputContainer>
-            <label>아티스트</label>
-            <input type={"text"} value={wantedMusic.singer} onChange={(e) => {
-              setWantedMusic({...wantedMusic, singer: e.target.value})
-            }}/>
-          </InputContainer>
-          <InputContainer>
-            <label>제목</label>
-            <input type={"text"} value={wantedMusic.title} onChange={(e) => {
-              setWantedMusic({...wantedMusic, title: e.target.value})
-            }}/>
-          </InputContainer>
-          <InputContainer>
-            <label>유튜브 비디오 ID</label>
-            <input type={"text"} value={wantedMusic.videoId} onChange={(e) => {
-              setWantedMusic({...wantedMusic, videoId: e.target.value})
-            }}/>
-          </InputContainer>
-          <button type={"submit"} onClick={(e) => addWantedMusic(e)}>대기열 추가
-          </button>
-          <p style={{fontSize: "8px"}}>유듀브 비디오 ID란? :
-            https://www.youtube.com/watch?v=<strong
-                style={{color: "red"}}>G1JQd78ZJ2I</strong>
-          </p>
-        </PostForm>
-      </ChartBackgound>
-  );
+    return (
+        <ChartBackgound>
+            <h1>{chart.title}</h1>
+            <ChartTable>
+                <h3>Top 100</h3>
+                {chart.topMusics.map((topMusic, idx) => {
+                    return (
+                        <ChartRow key={idx}>
+                            <p>{idx + 1}위</p>
+                            <iframe width={"200px"} height={"100px"}
+                                    src={"https://www.youtube.com/embed/" + topMusic.videoId}
+                                    title={topMusic.title}/>
+                            <p>{topMusic.title}</p>
+                            <p>{topMusic.singer}</p>
+                        </ChartRow>
+                    )
+                })}
+            </ChartTable>
+            <ChartTable>
+                <h3>신규 진입 대기열</h3>
+                {chart.wantedMusics.map((wantedMusic, idx) => {
+                    return (
+                        <ChartRow key={idx}>
+                            <p>{idx}위</p>
+                            <iframe width={"200px"} height={"100px"}
+                                    src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
+                                    title={wantedMusic.title}/>
+                            <p>{wantedMusic.title}</p>
+                            <p>{wantedMusic.singer}</p>
+                            <div>
+                                <Vote>
+                                    <ThumbUp/>
+                                    <span>{wantedMusic.likeCount}</span>
+                                </Vote>
+                                <Vote>
+                                    <ThumbDown/>
+                                    <span>{wantedMusic.dislikeCount}</span>
+                                </Vote>
+                            </div>
+                        </ChartRow>
+                    )
+                })}
+            </ChartTable>
+            <WantedForm/>
+        </ChartBackgound>
+    );
 }
 
 const ChartBackgound = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: ${MIN_WIDTH};
+  min-width: ${STYLE.MIN_WIDTH};
   width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
 `
 
-const PostForm = styled.form`
-  width: ${MIN_WIDTH};
-  border: 1px solid darkgrey;
-  border-radius: 3px;
+const ChartTable = styled.div`
+  width: ${STYLE.MIN_WIDTH};
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  gap: 10px;
+  border: 1px solid darkgrey;
+  margin-bottom: 20px;
+  padding: 10px 0;
 `
 
-const InputContainer = styled.div`
+const ChartRow = styled.div`
+  width: calc(${STYLE.MIN_WIDTH} - 10px);
   display: flex;
-  justify-content: space-between;
-  width: 500px;
-  height: 30px;
+  display: flex;
+  align-items: center;
+  border: 1px solid darkgrey;
+  justify-content: space-around;
+  background-color: slategrey;
+  border-radius: 10px;
+`
+
+const Vote = styled.div`
+  width: 80px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
   align-items: center;
 
-  input {
-    width: 300px;
+  svg {
+    cursor: pointer;
+    transform: scale(0.6);
+  }
+
+  svg:hover {
+    fill: red;
   }
 
 `

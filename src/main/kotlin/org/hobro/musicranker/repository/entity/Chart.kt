@@ -18,11 +18,11 @@ class Chart(
 
     @Column(nullable = true)
     @Convert(converter = StringArrayConverter::class)
-    val users: MutableList<String> = mutableListOf(),
+    val users: MutableList<String>?,
 
     @Column(nullable = true)
     @Convert(converter = LongArrayConverter::class)
-    val topMusics: MutableList<Long> = mutableListOf(),
+    val topMusics: MutableList<Long>?,
 
     @Column(nullable = true)
     @Convert(converter = LongArrayConverter::class)
@@ -30,6 +30,6 @@ class Chart(
 
     @Column(nullable = true)
     @Convert(converter = LongArrayConverter::class)
-    val prevTopMusics: MutableList<Long> = mutableListOf()
+    val prevTopMusics: MutableList<Long>?
 ) {
 }
