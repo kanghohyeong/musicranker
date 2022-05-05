@@ -40,3 +40,45 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+val frontendDir = "$projectDir/web"
+
+sourceSets {
+    main {
+        resources {
+            srcDirs("$projectDir/src/main/resources")
+        }
+    }
+}
+
+tasks {
+    withType<ProcessResources> {
+        dependsOn("copyReactBuildFiles")
+        duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+    }
+}
+
+task<Exec>("installReact") {
+    workingDir(frontendDir)
+    group = BasePlugin.BUILD_GROUP
+    inputs.dir(frontendDir)
+
+    commandLine("npm", "install")
+}
+
+task<Exec>("buildReact") {
+    dependsOn("installReact")
+    workingDir(frontendDir)
+    group = BasePlugin.BUILD_GROUP
+    inputs.dir(frontendDir)
+
+    commandLine("npm", "run-script", "build")
+}
+
+task<Copy>("copyReactBuildFiles") {
+    dependsOn("buildReact")
+    from("$frontendDir/build")
+    into("$projectDir/src/main/resources/static")
+}
+
+
