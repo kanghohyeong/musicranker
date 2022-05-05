@@ -8,7 +8,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class RankCategory(
+class Chart(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -18,14 +18,18 @@ class RankCategory(
 
     @Column(nullable = true)
     @Convert(converter = StringArrayConverter::class)
-    val users: List<String>?,
+    val users: MutableList<String> = mutableListOf(),
 
     @Column(nullable = true)
     @Convert(converter = LongArrayConverter::class)
-    val topMusics: List<Long>?,
+    val topMusics: MutableList<Long> = mutableListOf(),
 
     @Column(nullable = true)
     @Convert(converter = LongArrayConverter::class)
-    val wantedMusics: List<Long>?
+    var wantedMusics: MutableList<Long>?,
+
+    @Column(nullable = true)
+    @Convert(converter = LongArrayConverter::class)
+    val prevTopMusics: MutableList<Long> = mutableListOf()
 ) {
 }

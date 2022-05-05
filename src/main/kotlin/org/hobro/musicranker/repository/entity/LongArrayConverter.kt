@@ -2,15 +2,15 @@ package org.hobro.musicranker.repository.entity
 
 import javax.persistence.AttributeConverter
 
-class LongArrayConverter: AttributeConverter<List<Long>, String> {
+class LongArrayConverter : AttributeConverter<MutableList<Long>, String> {
     private val SPLIT_CHAR = ","
 
-    override fun convertToDatabaseColumn(attribute: List<Long>?): String? {
+    override fun convertToDatabaseColumn(attribute: MutableList<Long>?): String? {
         return attribute?.joinToString(SPLIT_CHAR)
     }
 
-    override fun convertToEntityAttribute(dbData: String?): List<Long>? {
-        return dbData?.split(SPLIT_CHAR)?.map { it.toLong() }
+    override fun convertToEntityAttribute(dbData: String?): MutableList<Long>? {
+        return dbData?.split(SPLIT_CHAR)?.map { it.toLong() }?.toMutableList()
     }
 
 }
