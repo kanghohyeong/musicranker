@@ -1,5 +1,6 @@
 package org.hobro.musicranker.repository.entity
 
+import org.hobro.musicranker.model.enums.ChartType
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -15,6 +16,13 @@ class Chart(
 
     @Column(nullable = false)
     val title: String,
+
+    @Column(nullable = false)
+    @Convert(converter = ChartType.ChartTypeConverter::class)
+    val chartType: ChartType,
+
+    @Column(nullable = false)
+    val description: String,
 
     @Column(nullable = true)
     @Convert(converter = StringArrayConverter::class)

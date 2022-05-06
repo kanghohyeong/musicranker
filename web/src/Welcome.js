@@ -8,7 +8,7 @@ function Welcome(props) {
     const navigate = useNavigate();
 
     return (
-        <BaseBackground>
+        <>
             <ContentSection>
                 <TitleContainer>
                     <TitleTextBox>
@@ -35,16 +35,9 @@ function Welcome(props) {
                     </DescriptionTextBox>
                 </DescriptionContainer>
             </ContentSection>
-        </BaseBackground>
+        </>
     );
 }
-
-const BaseBackground = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: ${COLOR.SECONDARY_BLACK};
-  position: relative;
-`
 
 const ContentSection = styled.div`
   background-color: ${COLOR.PRIMARY_BLACK};

@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import {STYLE} from "../const/style";
+import {COLOR, STYLE} from "../const/style";
 import {useNavigate} from "react-router-dom";
+import {ReactComponent as LibraryAdd} from "../assets/library_add.svg";
+import {ReactComponent as LibraryMusic} from "../assets/library_music.svg";
+import {ReactComponent as LibraryVideo} from "../assets/library_video.svg";
 
 function ChartList(props) {
 
@@ -14,6 +17,7 @@ function ChartList(props) {
                 if (res.ok) {
                     res.json().then(response => {
                         setChartList(response);
+                        console.log(response)
                     })
                 } else {
                     alert("서버 애러. 연락 바랍니다")
@@ -21,49 +25,100 @@ function ChartList(props) {
             })
     }, []);
 
-    return (
-        <ChartListBackground>
-            <h1>차트 목록</h1>
-            <ChartListTable>
-                {chartList.map((chart, idx) => {
-                    return (
-                        <ChartListRow onClick={()=>navigate(`/chart/${chart.id}`)}>
-                            <span>{chart.title}</span>
-                        </ChartListRow>
-                    )
-                })}
-            </ChartListTable>
-        </ChartListBackground>
-    );
+    return (<ContentSection>
+        <h1>Collections</h1>
+        <ChartListContainer>
+            {chartList.map((chart, idx) => {
+                return (<ChartItem onClick={() => navigate(`/chart/${chart.id}`)} key={idx}>
+                    {{
+                        "MUSIC": <LibraryIcon color={COLOR.COMPONENT_GREEN}>
+                            <LibraryMusic fill={"white"}/>
+                        </LibraryIcon>,
+                        "VIDEO": <LibraryIcon color={COLOR.COMPONENT_RED}>
+                            <LibraryVideo fill={"white"}/>
+                        </LibraryIcon>
+                    }[chart.chartType]}
+
+                    <ChartText>
+                        <strong>{chart.title}</strong>
+                        <p>{chart.description}</p>
+                    </ChartText>
+                </ChartItem>)
+            })}
+        </ChartListContainer>
+    </ContentSection>);
 }
 
-const ChartListBackground = styled.div`
+const ContentSection = styled.div`
+  background-color: ${COLOR.PRIMARY_BLACK};
+  width: ${STYLE.MIN_WIDTH};
+  height: 100vh;
+  margin: 0 auto;
+  position: relative;
+
+  h1 {
+    color: white;
+    font-size: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+  }
+`
+
+const ChartListContainer = styled.div`
+  width: ${STYLE.MIN_WIDTH};
+  height: calc(100vh - 80px);
+  overflow: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+`
+
+const ChartItem = styled.div`
+  border-radius: 10px;
+  width: calc(${STYLE.MIN_WIDTH} - 50px);
+  height: 100px;
+  background-color: ${COLOR.SECONDARY_BLACK};
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  min-width: ${STYLE.MIN_WIDTH};
-  width: 100vw;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 auto;
+  margin-bottom: 20px;
+`
+
+const LibraryIcon = styled.div`
+  background-color: ${props => props.color};
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
 `
 
-const ChartListTable = styled.div`
-  width: ${STYLE.MIN_WIDTH};
+const ChartText = styled.div`
+  width: 300px;
+  height: 90px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  border: 1px solid darkgrey;
-  padding: 10px 0;
-`
+  justify-content: center;
 
-const ChartListRow = styled.div`
-  border: 1px solid darkgrey;
-  border-radius: 10px;
-  width: calc(${STYLE.MIN_WIDTH} - 10px);
-  text-align: center;
-  height: 40px;
-  line-height: 40px;
-  background-color: slategrey;
-  cursor: pointer;
+  strong {
+    width: 300px;
+    font-size: 30px;
+    display: block;
+    color: ${COLOR.PRIMARY_GOLD};
+  }
+
+  p {
+    color: white;
+    width: 300px;
+    font-weight: lighter;
+  }
 `
 
 export default ChartList;
