@@ -12,7 +12,7 @@ function Layout(props) {
 }
 
 const BaseBackground = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-color: ${COLOR.SECONDARY_BLACK};
   position: relative;

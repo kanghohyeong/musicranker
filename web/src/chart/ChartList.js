@@ -92,8 +92,8 @@ const ChartItem = styled.div`
 
 const LibraryIcon = styled.div`
   background-color: ${props => props.color};
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -101,23 +101,24 @@ const LibraryIcon = styled.div`
 `
 
 const ChartText = styled.div`
-  width: 300px;
+  width: 250px;
   height: 90px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   strong {
-    width: 300px;
-    font-size: 30px;
+    width: 250px;
+    font-size: 20px;
     display: block;
     color: ${COLOR.PRIMARY_GOLD};
   }
 
   p {
     color: white;
-    width: 300px;
+    width: 250px;
     font-weight: lighter;
+    line-break: anywhere;
   }
 `
 

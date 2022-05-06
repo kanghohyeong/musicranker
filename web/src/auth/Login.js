@@ -20,8 +20,8 @@ function Login(props) {
 const PageBackgound = styled.div`
   background-color: azure;
   display: flex;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   justify-content: center;
   align-items: center;
 `

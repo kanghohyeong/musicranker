@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
-import {STYLE} from "../const/style";
+import {COLOR, STYLE} from "../const/style";
 
 function WantedForm(props) {
     const [wantedMusic, setWantedMusic] = useState(
@@ -52,7 +52,8 @@ function WantedForm(props) {
                     setWantedMusic({...wantedMusic, videoId: e.target.value})
                 }}/>
             </InputContainer>
-            <button type={"submit"} onClick={(e) => addWantedMusic(e)}>대기열 추가
+            <button type={"submit"} onClick={(e) => addWantedMusic(e)}
+            style={{width:"50px", height:"30px", backgroundColor:COLOR.PRIMARY_GOLD}}>대기열 추가
             </button>
             <p style={{fontSize: "8px"}}>유듀브 비디오 ID란? :
                 https://www.youtube.com/watch?v=<strong
@@ -77,7 +78,7 @@ const PostForm = styled.form`
 const InputContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 500px;
+  width: 400px;
   height: 30px;
   align-items: center;
 

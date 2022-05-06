@@ -1,5 +1,5 @@
 const STYLE = {
-    MIN_WIDTH: "500px"
+    MIN_WIDTH: "400px"
 }
 
 const COLOR = {
