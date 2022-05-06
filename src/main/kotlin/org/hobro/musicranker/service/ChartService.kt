@@ -4,6 +4,7 @@ import org.hobro.musicranker.controller.model.MusicRequest
 import org.hobro.musicranker.model.ChartDTO
 import org.hobro.musicranker.repository.ChartRepository
 import org.hobro.musicranker.repository.MusicRepository
+import org.hobro.musicranker.repository.entity.Chart
 import org.hobro.musicranker.repository.entity.Music
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -41,6 +42,10 @@ class ChartService(
                 .sortedBy { music -> chart.wantedMusics?.indexOf(music.id) },
             prevRanking = chart.prevTopMusics ?: mutableListOf()
         )
+    }
+
+    fun getChartList(): List<Chart> {
+        return chartRepository.findAll()
     }
 
 }

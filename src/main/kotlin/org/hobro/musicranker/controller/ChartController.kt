@@ -3,6 +3,7 @@ package org.hobro.musicranker.controller
 import io.swagger.annotations.ApiOperation
 import org.hobro.musicranker.controller.model.MusicRequest
 import org.hobro.musicranker.model.ChartDTO
+import org.hobro.musicranker.repository.entity.Chart
 import org.hobro.musicranker.service.ChartService
 import org.hobro.musicranker.utils.annotation.RestApiMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -36,6 +37,12 @@ class ChartController(
         chartId: Long
     ): ChartDTO {
         return chartService.getChart(chartId)
+    }
+
+    @ApiOperation(value = "차트 목록 반환", notes = "차트 전체 목록을 반환한다")
+    @GetMapping("/charts")
+    fun getChartList(): List<Chart> {
+        return chartService.getChartList()
     }
 
 }

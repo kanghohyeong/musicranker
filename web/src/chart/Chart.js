@@ -4,15 +4,18 @@ import {STYLE} from "../const/style";
 import WantedForm from "./WantedForm";
 import {ReactComponent as ThumbUp} from "../assets/thumb_up.svg";
 import {ReactComponent as ThumbDown} from "../assets/thumb_down.svg";
+import {useParams} from "react-router-dom";
 
 function Chart(props) {
+
+    const {chartId} = useParams();
 
     const [chart, setChart] = useState({
         topMusics: [], title: "로딩중", wantedMusics: [], prevRanking: []
     });
 
     useEffect(() => {
-        fetch("/api/chart/1")
+        fetch("/api/chart/"+chartId)
             .then(res => {
                 if (res.ok) {
                     res.json().then(response => {
@@ -56,7 +59,7 @@ function Chart(props) {
 
 
     return (
-        <ChartBackgound>
+        <ChartBackground>
             <h1>{chart.title}</h1>
             <ChartTable>
                 <h3>Top 100</h3>
@@ -121,11 +124,11 @@ function Chart(props) {
                 })}
             </ChartTable>
             <WantedForm/>
-        </ChartBackgound>
+        </ChartBackground>
     );
 }
 
-const ChartBackgound = styled.div`
+const ChartBackground = styled.div`
   display: flex;
   flex-direction: column;
   min-width: ${STYLE.MIN_WIDTH};
@@ -147,7 +150,6 @@ const ChartTable = styled.div`
 
 const ChartRow = styled.div`
   width: calc(${STYLE.MIN_WIDTH} - 10px);
-  display: flex;
   display: flex;
   align-items: center;
   border: 1px solid darkgrey;
