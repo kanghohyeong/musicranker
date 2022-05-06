@@ -15,7 +15,7 @@ function Chart(props) {
     });
 
     useEffect(() => {
-        fetch("/api/chart/"+chartId)
+        fetch("/api/chart/" + chartId)
             .then(res => {
                 if (res.ok) {
                     res.json().then(response => {
@@ -66,7 +66,8 @@ function Chart(props) {
                 {chart.topMusics.map((topMusic, idx) => {
                     const prevRank = chart.prevRanking.findIndex(id => id === topMusic.id);
                     let wave = "";
-                    if (prevRank > idx) wave = "UP";
+                    if (prevRank === -1) wave = "NEW";
+                    else if (prevRank > idx) wave = "UP";
                     else if (prevRank === idx) wave = "STAY";
                     else wave = "DOWN";
 
@@ -75,9 +76,10 @@ function Chart(props) {
                             <div>
                                 <p>{idx + 1}위</p>
                                 {{
-                                    'UP':<WaveIndicator color={"red"}>상승</WaveIndicator>,
-                                    "STAY":<WaveIndicator color={"black"}>--</WaveIndicator>,
-                                    "DOWN":<WaveIndicator color={"blue"}>하락</WaveIndicator>,
+                                    'UP': <WaveIndicator color={"red"}>상승</WaveIndicator>,
+                                    "STAY": <WaveIndicator color={"black"}>--</WaveIndicator>,
+                                    "DOWN": <WaveIndicator color={"blue"}>하락</WaveIndicator>,
+                                    "NEW": <WaveIndicator color={"green"}>신규</WaveIndicator>
                                 }[wave]}
                             </div>
                             <iframe width={"200px"} height={"100px"}

@@ -2,4 +2,9 @@ const STYLE = {
     MIN_WIDTH: "500px"
 }
 
-export {STYLE}
+const COLOR = {
+    PRIMARY_BLACK: "#242424",
+    SECONDARY_BLACK: "#3D3D3D",
+    PRIMARY_GOLD: "#FF9F09"
+}
+export {STYLE, COLOR}
