@@ -59,7 +59,8 @@ function WantedForm(props) {
                      borderRadius: "10px",
                      textAlign: "center",
                      lineHeight: "30px",
-                     backgroundColor: COLOR.PRIMARY_GOLD
+                     backgroundColor: COLOR.PRIMARY_GOLD,
+                     cursor:"pointer"
                  }}>ADD
             </div>
             <p style={{fontSize: "8px"}}>What is Video ID? :

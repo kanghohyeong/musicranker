@@ -4,11 +4,13 @@ import {COLOR, STYLE} from "../const/style";
 import WantedForm from "./WantedForm";
 import {ReactComponent as ThumbUp} from "../assets/thumb_up.svg";
 import {ReactComponent as ThumbDown} from "../assets/thumb_down.svg";
-import {useParams} from "react-router-dom";
+import {ReactComponent as Home} from "../assets/home.svg";
+import {useParams, useNavigate} from "react-router-dom";
 
 function Chart(props) {
 
     const {chartId} = useParams();
+    const navigate = useNavigate();
 
     const [chart, setChart] = useState({
         topMusics: [], title: "로딩중", wantedMusics: [], description: "로딩중.."
@@ -62,6 +64,15 @@ function Chart(props) {
         <ContentSection>
             <h1 style={{margin: "0 10px"}}>{chart.title}</h1>
             <p style={{margin: "10px 10px"}}>{chart.description}</p>
+            <Home fill={COLOR.COMPONENT_RED}
+                  onClick={() => navigate("/chart")}
+                  style={{
+                      position: "absolute",
+                      top: "0",
+                      right: "0",
+                      transform: "scale(0.6)",
+                      cursor: "pointer"
+                  }}/>
             <ScrollContainer>
                 <ChartTable>
                     <h3>Top 100</h3>
