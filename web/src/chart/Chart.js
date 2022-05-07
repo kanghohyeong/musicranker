@@ -120,7 +120,7 @@ function Chart(props) {
                                     대기
                                 </div>
                                 <div className={"iframe-box"}>
-                                    <iframe width={"120px"} height={"80px"}
+                                    <iframe height={"80px"}
                                             src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
                                             title={wantedMusic.title}/>
                                 </div>
@@ -221,6 +221,9 @@ const ChartRow = styled.div`
 
   .iframe-box {
     width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.33);
+    iframe {
+      width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.3);
+    }
   }
 
   .info-box {

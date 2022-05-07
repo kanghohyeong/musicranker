@@ -45,6 +45,7 @@ const ContentSection = styled.div`
   height: inherit;
   margin: 0 auto;
   position: relative;
+  font-size: 2vh;
 `
 
 const TitleContainer = styled.div`
@@ -56,12 +57,12 @@ const TitleTextBox = styled.div`
 
   strong {
     color: ${COLOR.PRIMARY_GOLD};
-    font-size: 100px;
+    font-size: 5em;
     font-weight: bold;
   }
 
   span {
-    font-size: 80px;
+    font-size: 4em;
   }
 `
 
@@ -77,14 +78,14 @@ const DescriptionTextBox = styled.div`
   margin-top: 10px;
 
   strong {
-    font-size: 60px;
+    font-size: 3em;
     font-weight: bold;
     display: block;
     right: 0;
   }
 
   span {
-    font-size: 30px;
+    font-size: 1.5em;
   }
 `
 
