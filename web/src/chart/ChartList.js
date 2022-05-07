@@ -28,7 +28,7 @@ function ChartList(props) {
     return (<ContentSection>
         <h1>Collections</h1>
         <ChartListContainer>
-            {chartList.map((chart, idx) => {
+            {chartList.length ? chartList.map((chart, idx) => {
                 return (<ChartItem onClick={() => navigate(`/chart/${chart.id}`)} key={idx}>
                     {{
                         "MUSIC": <LibraryIcon color={COLOR.COMPONENT_GREEN}>
@@ -44,7 +44,7 @@ function ChartList(props) {
                         <p>{chart.description}</p>
                     </ChartText>
                 </ChartItem>)
-            })}
+            }): <div style={{textAlign:"center", color:COLOR.COMPONENT_RED}}>loading..</div>}
         </ChartListContainer>
     </ContentSection>);
 }

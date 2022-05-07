@@ -1,5 +1,10 @@
+function getMinWidth() {
+    const innerWidth = window.innerWidth;
+    return innerWidth>=400 ? 400 : innerWidth;
+}
+
 const STYLE = {
-    MIN_WIDTH: "400px",
+    MIN_WIDTH: `${getMinWidth()}px`,
     MUSIC_ROW_HEIGHT: "100px"
 }
 
