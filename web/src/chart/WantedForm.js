@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
 import {COLOR, STYLE} from "../const/style";
+import {useParams} from "react-router-dom";
 
 function WantedForm(props) {
+    const {chartId} = useParams();
+
     const [wantedMusic, setWantedMusic] = useState(
         {singer: "", title: "", videoId: ""});
 
@@ -17,7 +20,7 @@ function WantedForm(props) {
             }
         }
 
-        fetch("/api/chart/1/wanted", {
+        fetch(`/api/chart/${chartId}/wanted`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -60,7 +63,7 @@ function WantedForm(props) {
                      textAlign: "center",
                      lineHeight: "30px",
                      backgroundColor: COLOR.PRIMARY_GOLD,
-                     cursor:"pointer"
+                     cursor: "pointer"
                  }}>ADD
             </div>
             <p style={{fontSize: "8px"}}>What is Video ID? :
@@ -91,8 +94,9 @@ const InputContainer = styled.div`
   align-items: center;
 
   input {
-    width: 300px;
+    width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.6);
     background-color: ${COLOR.SECONDARY_BLACK};
+    color: white;
   }
 `
 export default WantedForm;

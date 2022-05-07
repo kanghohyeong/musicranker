@@ -44,7 +44,7 @@ function ChartList(props) {
                         <p>{chart.description}</p>
                     </ChartText>
                 </ChartItem>)
-            }): <div style={{textAlign:"center", color:COLOR.COMPONENT_RED}}>loading..</div>}
+            }) : <div style={{textAlign: "center", color: COLOR.COMPONENT_RED}}>loading..</div>}
         </ChartListContainer>
     </ContentSection>);
 }
@@ -79,15 +79,18 @@ const ChartListContainer = styled.div`
 
 const ChartItem = styled.div`
   border-radius: 10px;
-  width: calc(${STYLE.MIN_WIDTH} - 50px);
+  width: calc(${STYLE.MIN_WIDTH} - 20px);
   height: 100px;
   background-color: ${COLOR.SECONDARY_BLACK};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  margin: 0 auto;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+
+  &:hover {
+    background-color: darkgrey;
+  }
 `
 
 const LibraryIcon = styled.div`
@@ -101,7 +104,7 @@ const LibraryIcon = styled.div`
 `
 
 const ChartText = styled.div`
-  width: 250px;
+  width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.7);
   height: 90px;
   display: flex;
   flex-direction: column;
