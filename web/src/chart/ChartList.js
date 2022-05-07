@@ -52,7 +52,7 @@ function ChartList(props) {
 const ContentSection = styled.div`
   background-color: ${COLOR.PRIMARY_BLACK};
   width: ${STYLE.MIN_WIDTH};
-  height: 100vh;
+  height: 100%;
   margin: 0 auto;
   position: relative;
 

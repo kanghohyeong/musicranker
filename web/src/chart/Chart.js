@@ -60,77 +60,79 @@ function Chart(props) {
 
     return (
         <ContentSection>
-            <h1 style={{margin: "10px 10px"}}>{chart.title}</h1>
-            <p style={{margin:"10px 10px"}}>{chart.description}</p>
-            <ChartTable>
-                <h3>Top 100</h3>
-                {chart.topMusics.map((topMusic, idx) => {
-                    return (
-                        <ChartRow key={idx}>
-                            <div className={"rank-box"}>
-                                <p>{topMusic.rank}</p>
-                                {{
-                                    'UP': <WaveIndicator color={"red"}>상승</WaveIndicator>,
-                                    "STAY": <WaveIndicator color={"black"}>-</WaveIndicator>,
-                                    "DOWN": <WaveIndicator color={"blue"}>하락</WaveIndicator>,
-                                    "NEW": <WaveIndicator color={"green"}>신규</WaveIndicator>
-                                }[topMusic.wave]}
-                            </div>
-                            <div className={"iframe-box"}>
-                                <iframe width={"120px"} height={"80px"}
-                                        src={"https://www.youtube.com/embed/" + topMusic.videoId}
-                                        title={topMusic.title}/>
-                            </div>
-                            <div className={"info-box"}>
-                                <p style={{color:COLOR.PRIMARY_GOLD, fontWeight:"bold"}}>{topMusic.title}</p>
-                                <p style={{fontSize:"15px", fontWeight:"lighter"}}>{topMusic.singer}</p>
-                            </div>
-                            <div className={"vote-box"}>
-                                <Vote>
-                                    <ThumbUp onClick={() => vote("like", topMusic.id)}/>
-                                    <span>{topMusic.likeCount}</span>
-                                </Vote>
-                                <Vote>
-                                    <ThumbDown onClick={() => vote("dislike", topMusic.id)}/>
-                                    <span>{topMusic.dislikeCount}</span>
-                                </Vote>
-                            </div>
-                        </ChartRow>
-                    )
-                })}
-            </ChartTable>
-            <ChartTable>
-                <h3>How About THIS SHIT?</h3>
-                {chart.wantedMusics.length ? chart.wantedMusics.map((wantedMusic, idx) => {
-                    return (
-                        <ChartRow key={idx}>
-                            <div className={"rank-box"}>
-                            대기
-                            </div>
-                            <div className={"iframe-box"}>
-                                <iframe width={"120px"} height={"80px"}
-                                        src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
-                                        title={wantedMusic.title}/>
-                            </div>
-                            <div className={"info-box"}>
-                                <p style={{color:COLOR.PRIMARY_GOLD, fontWeight:"bold"}}>{wantedMusic.title}</p>
-                                <p style={{fontSize:"15px", fontWeight:"lighter"}}>{wantedMusic.singer}</p>
-                            </div>
-                            <div className={"vote-box"}>
-                                <Vote>
-                                    <ThumbUp onClick={() => vote("like", wantedMusic.id)}/>
-                                    <span>{wantedMusic.likeCount}</span>
-                                </Vote>
-                                <Vote>
-                                    <ThumbDown onClick={() => vote("dislike", wantedMusic.id)}/>
-                                    <span>{wantedMusic.dislikeCount}</span>
-                                </Vote>
-                            </div>
-                        </ChartRow>
-                    )
-                }) : <p style={{color: COLOR.PRIMARY_GOLD}}>"please introduce new shit"</p>}
-            </ChartTable>
-            <WantedForm/>
+            <h1 style={{margin: "0 10px"}}>{chart.title}</h1>
+            <p style={{margin: "10px 10px"}}>{chart.description}</p>
+            <ScrollContainer>
+                <ChartTable>
+                    <h3>Top 100</h3>
+                    {chart.topMusics.map((topMusic, idx) => {
+                        return (
+                            <ChartRow key={idx}>
+                                <div className={"rank-box"}>
+                                    <p>{topMusic.rank}</p>
+                                    {{
+                                        'UP': <WaveIndicator color={"red"}>상승</WaveIndicator>,
+                                        "STAY": <WaveIndicator color={"black"}>-</WaveIndicator>,
+                                        "DOWN": <WaveIndicator color={"blue"}>하락</WaveIndicator>,
+                                        "NEW": <WaveIndicator color={"green"}>신규</WaveIndicator>
+                                    }[topMusic.wave]}
+                                </div>
+                                <div className={"iframe-box"}>
+                                    <iframe width={"120px"} height={"80px"}
+                                            src={"https://www.youtube.com/embed/" + topMusic.videoId}
+                                            title={topMusic.title}/>
+                                </div>
+                                <div className={"info-box"}>
+                                    <p style={{color: COLOR.PRIMARY_GOLD, fontWeight: "bold"}}>{topMusic.title}</p>
+                                    <p style={{fontSize: "15px", fontWeight: "lighter"}}>{topMusic.singer}</p>
+                                </div>
+                                <div className={"vote-box"}>
+                                    <Vote>
+                                        <ThumbUp onClick={() => vote("like", topMusic.id)}/>
+                                        <span>{topMusic.likeCount}</span>
+                                    </Vote>
+                                    <Vote>
+                                        <ThumbDown onClick={() => vote("dislike", topMusic.id)}/>
+                                        <span>{topMusic.dislikeCount}</span>
+                                    </Vote>
+                                </div>
+                            </ChartRow>
+                        )
+                    })}
+                </ChartTable>
+                <ChartTable>
+                    <h3>How About THIS SHIT?</h3>
+                    {chart.wantedMusics.length ? chart.wantedMusics.map((wantedMusic, idx) => {
+                        return (
+                            <ChartRow key={idx}>
+                                <div className={"rank-box"}>
+                                    대기
+                                </div>
+                                <div className={"iframe-box"}>
+                                    <iframe width={"120px"} height={"80px"}
+                                            src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
+                                            title={wantedMusic.title}/>
+                                </div>
+                                <div className={"info-box"}>
+                                    <p style={{color: COLOR.PRIMARY_GOLD, fontWeight: "bold"}}>{wantedMusic.title}</p>
+                                    <p style={{fontSize: "15px", fontWeight: "lighter"}}>{wantedMusic.singer}</p>
+                                </div>
+                                <div className={"vote-box"}>
+                                    <Vote>
+                                        <ThumbUp onClick={() => vote("like", wantedMusic.id)}/>
+                                        <span>{wantedMusic.likeCount}</span>
+                                    </Vote>
+                                    <Vote>
+                                        <ThumbDown onClick={() => vote("dislike", wantedMusic.id)}/>
+                                        <span>{wantedMusic.dislikeCount}</span>
+                                    </Vote>
+                                </div>
+                            </ChartRow>
+                        )
+                    }) : <p style={{color: COLOR.PRIMARY_GOLD}}>"please introduce new shit"</p>}
+                </ChartTable>
+                <WantedForm/>
+            </ScrollContainer>
         </ContentSection>
     );
 }
@@ -138,7 +140,7 @@ function Chart(props) {
 const ContentSection = styled.div`
   background-color: ${COLOR.PRIMARY_BLACK};
   width: ${STYLE.MIN_WIDTH};
-  height: 100vh;
+  height: 100%;
   margin: 0 auto;
   position: relative;
   color: white;
@@ -154,6 +156,18 @@ const ContentSection = styled.div`
   }
 `
 
+const ScrollContainer = styled.div`
+  width: ${STYLE.MIN_WIDTH};
+  height: calc(100% - 100px);
+  overflow: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
+
 const ChartTable = styled.div`
   width: calc(${STYLE.MIN_WIDTH} - 20px);
   margin: 10px auto;
@@ -164,7 +178,7 @@ const ChartTable = styled.div`
   align-items: center;
   padding-bottom: 20px;
   padding-top: 10px;
-  
+
   h3 {
     color: ${COLOR.COMPONENT_RED};
   }
@@ -180,28 +194,29 @@ const ChartRow = styled.div`
   &:last-child {
     border-bottom: 0.5px solid darkgrey;
   }
-  
-  &:hover{
+
+  &:hover {
     background-color: darkgrey;
   }
-  
+
   .rank-box {
     width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.12);
     text-align: center;
+
     p {
       font-size: 30px;
     }
   }
-  
+
   .iframe-box {
     width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.33);
   }
-  
+
   .info-box {
     width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.33);
     padding-left: 5px;
   }
-  
+
   .vote-box {
     width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.18);
   }
