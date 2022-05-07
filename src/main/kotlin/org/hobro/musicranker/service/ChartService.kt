@@ -2,6 +2,7 @@ package org.hobro.musicranker.service
 
 import org.hobro.musicranker.controller.model.MusicRequest
 import org.hobro.musicranker.model.ChartDTO
+import org.hobro.musicranker.model.MusicDTO
 import org.hobro.musicranker.repository.ChartRepository
 import org.hobro.musicranker.repository.MusicRepository
 import org.hobro.musicranker.repository.entity.Chart
@@ -18,16 +19,7 @@ class ChartService(
     fun addWantedMusic(chartId: Long, musicRequest: MusicRequest) {
         val chart = chartRepository.findById(chartId).get()
 
-        val music = musicRepository.save(Music.of(musicRequest))
-
-        val wantedMusics = chart.wantedMusics
-
-        if (wantedMusics != null) {
-            wantedMusics.add(music.id!!)
-        } else {
-            chart.wantedMusics = mutableListOf(music.id!!)
-        }
-
+        musicRepository.save(Music.of(musicRequest, chart))
         chartRepository.save(chart)
     }
 
@@ -36,11 +28,11 @@ class ChartService(
 
         return ChartDTO(
             title = chart.title,
-            topMusics = musicRepository.findAllById(chart.topMusics ?: mutableListOf())
-                .sortedBy { music -> chart.topMusics?.indexOf(music.id) },
-            wantedMusics = musicRepository.findAllById(chart.wantedMusics ?: mutableListOf())
-                .sortedBy { music -> chart.wantedMusics?.indexOf(music.id) },
-            prevRanking = chart.prevTopMusics ?: mutableListOf()
+            topMusics = chart.getRankedMusics().sortedBy { it -> -it.rank!! }
+                .map { MusicDTO.of(it) },
+            wantedMusics = chart.getWaitedMusics().map { MusicDTO.of(it) },
+            description = chart.description,
+            chartType = chart.chartType
         )
     }
 

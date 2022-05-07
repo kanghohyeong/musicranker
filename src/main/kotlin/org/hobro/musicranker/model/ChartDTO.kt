@@ -1,10 +1,11 @@
 package org.hobro.musicranker.model
 
-import org.hobro.musicranker.repository.entity.Music
+import org.hobro.musicranker.model.enums.ChartType
 
 data class ChartDTO(
-    val topMusics: List<Music>,
-    val wantedMusics: List<Music>,
+    val topMusics: List<MusicDTO>,
+    val wantedMusics: List<MusicDTO>,
     val title: String,
-    val prevRanking: List<Long>
+    val description: String,
+    val chartType: ChartType
 )

@@ -18,73 +18,57 @@ class RankingCalculator(
         val charts = chartRepository.findAll()
 
         charts.forEach { chart ->
-            val topMusics = musicRepository.findAllById(chart.topMusics ?: mutableListOf())
-                .sortedBy { music ->
-                    chart.topMusics?.indexOf(music.id)
-                }.toMutableList()
-            val wantedMusics = musicRepository.findAllById(chart.wantedMusics ?: mutableListOf())
-                .sortedBy { music ->
-                    -(music.likeCount - music.dislikeCount)
-                }.toMutableList()
-
-            var updatedMusics = mutableListOf<Music>()
-            updatedMusics.addAll(topMusics)
-            updatedMusics.addAll(wantedMusics)
-            updatedMusics = updatedMusics.distinctBy { it.id }.toMutableList()
-            val newTopMusics = mutableListOf<Long>()
-            val newWantedMusics = mutableListOf<Long>()
+            val topMusics = chart.getRankedMusics().toMutableList()
+            val waitedMusics = chart.getWaitedMusics().filter { it.likeCount >= it.dislikeCount }.toMutableList()
 
             // top ranking 계산
             if (topMusics.isNotEmpty()) {
                 topMusics.reverse()
                 var lastMusic = topMusics.first()
+                lastMusic.prevRank = lastMusic.rank
                 for (i: Int in 1 until topMusics.size) {
                     val curMusic = topMusics[i]
+                    curMusic.prevRank = curMusic.rank
 
                     if (compareRank(lastMusic, curMusic)) {
-                        newTopMusics.add(curMusic.id!!)
+                        curMusic.rank = lastMusic.rank
                         lastMusic.likeCount--
                     } else {
-                        newTopMusics.add(lastMusic.id!!)
                         lastMusic = curMusic
                     }
                 }
-                newTopMusics.add(lastMusic.id!!)
-                newTopMusics.reverse()
             }
 
             // 대기열 랭킹업
-            if (wantedMusics.isNotEmpty()) {
-                if (newTopMusics.size < 100) {
-                    while (true) {
-                        newTopMusics.add(wantedMusics.first().id!!)
-                        updatedMusics.find { it.id == wantedMusics.first().id }!!.rankedAt = LocalDateTime.now()
-                        wantedMusics.removeFirst()
-                        if (newTopMusics.size == 100 || wantedMusics.size == 0) break
+            if (waitedMusics.isNotEmpty()) {
+                if (topMusics.size < 100) {
+                    for (i: Int in 0 until waitedMusics.size) {
+                        val nextRank = topMusics.size + i
+                        if (nextRank > 100) break
+                        waitedMusics[i].rank = nextRank.toLong()
                     }
                 } else {
-                    val limit = if (wantedMusics.size < 5) wantedMusics.size else 5
+                    val limit = if (waitedMusics.size < 5) waitedMusics.size else 5
                     for (i: Int in 0 until limit) {
-                        updatedMusics.find { it.id == newTopMusics[100 - limit + i] }!!.rankedAt = null
-                        newTopMusics[100 - limit + i] = wantedMusics[i].id!!
-                        updatedMusics.find { it.id == wantedMusics[i].id }!!.rankedAt = LocalDateTime.now()
-                    }
-                    for (j: Int in limit until wantedMusics.size) {
-                        newWantedMusics.add(wantedMusics[j].id!!)
+                        waitedMusics[i].rank = topMusics[i].rank
+                        topMusics[i].rank = null
+                        waitedMusics[i].rankedAt = LocalDateTime.now()
                     }
                 }
             }
 
             // 차트 업데이트
-            chart.prevTopMusics = chart.topMusics
-            chart.topMusics = newTopMusics
-            chart.wantedMusics = newWantedMusics
+            val newMusics = topMusics.filter { it.isRanked() }
+                .plus(waitedMusics.filter { it.isRanked() })
+                .map { resetLike(it) }
+            chart.musics = newMusics.toList()
             chartRepository.save(chart)
 
-            // 음악 업데이트
-            updatedMusics.map { resetLike(it) }
-            musicRepository.saveAll(updatedMusics)
-
+            // 밀려난 음악 삭제
+            val removedMusics = chart.musics?.filter { !newMusics.contains(it) }?.toMutableList()
+            if (removedMusics != null) {
+                musicRepository.deleteAll(removedMusics)
+            }
         }
     }
 
