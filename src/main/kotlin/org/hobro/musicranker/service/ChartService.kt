@@ -28,8 +28,7 @@ class ChartService(
 
         return ChartDTO(
             title = chart.title,
-            topMusics = chart.getRankedMusics().sortedBy { it -> -it.rank!! }
-                .map { MusicDTO.of(it) },
+            topMusics = chart.getRankedMusics().map { MusicDTO.of(it) },
             wantedMusics = chart.getWaitedMusics().map { MusicDTO.of(it) },
             description = chart.description,
             chartType = chart.chartType

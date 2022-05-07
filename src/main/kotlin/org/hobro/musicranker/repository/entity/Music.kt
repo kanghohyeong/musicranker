@@ -10,7 +10,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Music(
+data class Music(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -24,14 +24,14 @@ class Music(
     @Column(nullable = false)
     val singer: String,
 
-    @Column(nullable = false, name = "chart_id")
-    var chartId: Long,
+    @Column(nullable = true, name = "chart_id")
+    var chartId: Long?,
 
     @Column(nullable = true)
-    var rank: Long? = null,
+    var rank: Int? = null,
 
     @Column(nullable = true)
-    var prevRank: Long? = null,
+    var prevRank: Int? = null,
 
     @Column(nullable = true)
     var rankedAt: LocalDateTime? = null,

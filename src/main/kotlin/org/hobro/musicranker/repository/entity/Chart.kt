@@ -1,6 +1,7 @@
 package org.hobro.musicranker.repository.entity
 
 import org.hobro.musicranker.model.enums.ChartType
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -30,12 +31,12 @@ class Chart(
     @Convert(converter = StringArrayConverter::class)
     var users: MutableList<String>?,
 
-    @OneToMany(targetEntity = Music::class)
+    @OneToMany(targetEntity = Music::class, cascade = [CascadeType.ALL])
     @JoinColumn(name = "chart_id")
     var musics: List<Music>?,
 ) {
     fun getRankedMusics(): List<Music> {
-        return musics?.filter { it.isRanked() }?.sortedBy { -it.rank!! } ?: emptyList()
+        return musics?.filter { it.isRanked() }?.sortedBy { it.rank!! } ?: emptyList()
     }
 
     fun getWaitedMusics(): List<Music> {

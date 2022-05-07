@@ -6,6 +6,7 @@ import org.hobro.musicranker.repository.entity.Music
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import javax.transaction.Transactional
 
 @Component
 class RankingCalculator(
@@ -14,7 +15,10 @@ class RankingCalculator(
 ) {
 
     @Scheduled(fixedRate = 1000 * 60 * 5)
+    @Transactional
     fun calculate() {
+        println("ranking start-------")
+
         val charts = chartRepository.findAll()
 
         charts.forEach { chart ->
@@ -23,17 +27,19 @@ class RankingCalculator(
 
             // top ranking 계산
             if (topMusics.isNotEmpty()) {
-                topMusics.reverse()
-                var lastMusic = topMusics.first()
-                lastMusic.prevRank = lastMusic.rank
-                for (i: Int in 1 until topMusics.size) {
+                var lastMusic = topMusics.last()
+                lastMusic.prevRank = topMusics.size
+                for (i: Int in topMusics.size - 1 - 1 downTo 0) {
                     val curMusic = topMusics[i]
-                    curMusic.prevRank = curMusic.rank
+                    curMusic.prevRank = i + 1
 
                     if (compareRank(lastMusic, curMusic)) {
-                        curMusic.rank = lastMusic.rank
+                        curMusic.rank = i + 2
+                        lastMusic.rank = i + 1
                         lastMusic.likeCount--
                     } else {
+                        curMusic.rank = i + 1
+                        lastMusic.rank = i + 2
                         lastMusic = curMusic
                     }
                 }
@@ -43,15 +49,17 @@ class RankingCalculator(
             if (waitedMusics.isNotEmpty()) {
                 if (topMusics.size < 100) {
                     for (i: Int in 0 until waitedMusics.size) {
-                        val nextRank = topMusics.size + i
+                        val nextRank = topMusics.size + 1 + i
                         if (nextRank > 100) break
-                        waitedMusics[i].rank = nextRank.toLong()
+                        waitedMusics[i].rank = nextRank
+                        waitedMusics[i].rankedAt = LocalDateTime.now()
                     }
                 } else {
                     val limit = if (waitedMusics.size < 5) waitedMusics.size else 5
                     for (i: Int in 0 until limit) {
-                        waitedMusics[i].rank = topMusics[i].rank
-                        topMusics[i].rank = null
+                        val curRank = 100 - limit + i
+                        waitedMusics[i].rank = curRank
+                        topMusics.find { it.rank == curRank }?.rank = null
                         waitedMusics[i].rankedAt = LocalDateTime.now()
                     }
                 }
@@ -61,14 +69,15 @@ class RankingCalculator(
             val newMusics = topMusics.filter { it.isRanked() }
                 .plus(waitedMusics.filter { it.isRanked() })
                 .map { resetLike(it) }
-            chart.musics = newMusics.toList()
-            chartRepository.save(chart)
 
             // 밀려난 음악 삭제
             val removedMusics = chart.musics?.filter { !newMusics.contains(it) }?.toMutableList()
             if (removedMusics != null) {
                 musicRepository.deleteAll(removedMusics)
             }
+
+            chart.musics = newMusics.toMutableList()
+            chartRepository.save(chart)
         }
     }
 

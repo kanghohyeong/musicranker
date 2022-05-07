@@ -11,7 +11,7 @@ function Chart(props) {
     const {chartId} = useParams();
 
     const [chart, setChart] = useState({
-        topMusics: [], title: "로딩중", wantedMusics: [], prevRanking: []
+        topMusics: [], title: "로딩중", wantedMusics: [], description: "로딩중.."
     });
 
     useEffect(() => {
@@ -20,6 +20,7 @@ function Chart(props) {
                 if (res.ok) {
                     res.json().then(response => {
                         setChart(response);
+                        console.log(response);
                     })
                 } else {
                     alert("서버 애러. 연락 바랍니다")
@@ -64,13 +65,6 @@ function Chart(props) {
             <ChartTable>
                 <h3>Top 100</h3>
                 {chart.topMusics.map((topMusic, idx) => {
-                    const prevRank = chart.prevRanking.findIndex(id => id === topMusic.id);
-                    let wave = "";
-                    if (prevRank === -1) wave = "NEW";
-                    else if (prevRank > idx) wave = "UP";
-                    else if (prevRank === idx) wave = "STAY";
-                    else wave = "DOWN";
-
                     return (
                         <ChartRow key={idx}>
                             <div>
@@ -80,7 +74,7 @@ function Chart(props) {
                                     "STAY": <WaveIndicator color={"black"}>--</WaveIndicator>,
                                     "DOWN": <WaveIndicator color={"blue"}>하락</WaveIndicator>,
                                     "NEW": <WaveIndicator color={"green"}>신규</WaveIndicator>
-                                }[wave]}
+                                }[topMusic.wave]}
                             </div>
                             <iframe width={"200px"} height={"100px"}
                                     src={"https://www.youtube.com/embed/" + topMusic.videoId}
@@ -117,7 +111,7 @@ function Chart(props) {
                                     <span>{wantedMusic.likeCount}</span>
                                 </Vote>
                                 <Vote>
-                                    <ThumbDown onClick={() => vote("dislike", wantedMusic.i)}/>
+                                    <ThumbDown onClick={() => vote("dislike", wantedMusic.id)}/>
                                     <span>{wantedMusic.dislikeCount}</span>
                                 </Vote>
                             </div>

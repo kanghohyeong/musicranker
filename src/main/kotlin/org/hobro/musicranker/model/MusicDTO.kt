@@ -8,7 +8,7 @@ data class MusicDTO(
     val videoId: String,
     val title: String,
     val singer: String,
-    val rank: Long?,
+    val rank: Int?,
     val wave: WaveType?,
     val likeCount: Long,
     val dislikeCount: Long
