@@ -1,5 +1,6 @@
 const STYLE = {
-    MIN_WIDTH: "400px"
+    MIN_WIDTH: "400px",
+    MUSIC_ROW_HEIGHT: "100px"
 }
 
 const COLOR = {

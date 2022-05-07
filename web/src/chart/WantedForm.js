@@ -35,27 +35,34 @@ function WantedForm(props) {
     return (
         <PostForm>
             <InputContainer>
-                <label>아티스트</label>
+                <label>Artist</label>
                 <input type={"text"} value={wantedMusic.singer} onChange={(e) => {
                     setWantedMusic({...wantedMusic, singer: e.target.value})
                 }}/>
             </InputContainer>
             <InputContainer>
-                <label>제목</label>
+                <label>Title</label>
                 <input type={"text"} value={wantedMusic.title} onChange={(e) => {
                     setWantedMusic({...wantedMusic, title: e.target.value})
                 }}/>
             </InputContainer>
             <InputContainer>
-                <label>유튜브 비디오 ID</label>
+                <label>Video ID</label>
                 <input type={"text"} value={wantedMusic.videoId} onChange={(e) => {
                     setWantedMusic({...wantedMusic, videoId: e.target.value})
                 }}/>
             </InputContainer>
-            <button type={"submit"} onClick={(e) => addWantedMusic(e)}
-            style={{width:"50px", height:"30px", backgroundColor:COLOR.PRIMARY_GOLD}}>대기열 추가
-            </button>
-            <p style={{fontSize: "8px"}}>유듀브 비디오 ID란? :
+            <div onClick={(e) => addWantedMusic(e)}
+                 style={{
+                     width: "100px",
+                     height: "30px",
+                     borderRadius: "10px",
+                     textAlign: "center",
+                     lineHeight: "30px",
+                     backgroundColor: COLOR.PRIMARY_GOLD
+                 }}>ADD
+            </div>
+            <p style={{fontSize: "8px"}}>What is Video ID? :
                 https://www.youtube.com/watch?v=<strong
                     style={{color: "red"}}>G1JQd78ZJ2I</strong>
             </p>
@@ -64,11 +71,11 @@ function WantedForm(props) {
 }
 
 
-
 const PostForm = styled.form`
-  width: ${STYLE.MIN_WIDTH};
+  width: calc(${STYLE.MIN_WIDTH} - 20px);
+  margin: 0 auto;
   border: 1px solid darkgrey;
-  border-radius: 3px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -78,12 +85,13 @@ const PostForm = styled.form`
 const InputContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 400px;
+  width: calc(${STYLE.MIN_WIDTH} - 30px);
   height: 30px;
   align-items: center;
 
   input {
     width: 300px;
+    background-color: ${COLOR.SECONDARY_BLACK};
   }
 `
 export default WantedForm;

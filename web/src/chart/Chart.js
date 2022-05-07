@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import {STYLE} from "../const/style";
+import {COLOR, STYLE} from "../const/style";
 import WantedForm from "./WantedForm";
 import {ReactComponent as ThumbUp} from "../assets/thumb_up.svg";
 import {ReactComponent as ThumbDown} from "../assets/thumb_down.svg";
@@ -20,7 +20,6 @@ function Chart(props) {
                 if (res.ok) {
                     res.json().then(response => {
                         setChart(response);
-                        console.log(response);
                     })
                 } else {
                     alert("서버 애러. 연락 바랍니다")
@@ -60,28 +59,33 @@ function Chart(props) {
 
 
     return (
-        <ChartBackground>
-            <h1>{chart.title}</h1>
+        <ContentSection>
+            <h1 style={{margin: "10px 10px"}}>{chart.title}</h1>
+            <p style={{margin:"10px 10px"}}>{chart.description}</p>
             <ChartTable>
                 <h3>Top 100</h3>
                 {chart.topMusics.map((topMusic, idx) => {
                     return (
                         <ChartRow key={idx}>
-                            <div>
-                                <p>{idx + 1}위</p>
+                            <div className={"rank-box"}>
+                                <p>{topMusic.rank}</p>
                                 {{
                                     'UP': <WaveIndicator color={"red"}>상승</WaveIndicator>,
-                                    "STAY": <WaveIndicator color={"black"}>--</WaveIndicator>,
+                                    "STAY": <WaveIndicator color={"black"}>-</WaveIndicator>,
                                     "DOWN": <WaveIndicator color={"blue"}>하락</WaveIndicator>,
                                     "NEW": <WaveIndicator color={"green"}>신규</WaveIndicator>
                                 }[topMusic.wave]}
                             </div>
-                            <iframe width={"200px"} height={"100px"}
-                                    src={"https://www.youtube.com/embed/" + topMusic.videoId}
-                                    title={topMusic.title}/>
-                            <p>{topMusic.title}</p>
-                            <p>{topMusic.singer}</p>
-                            <div>
+                            <div className={"iframe-box"}>
+                                <iframe width={"120px"} height={"80px"}
+                                        src={"https://www.youtube.com/embed/" + topMusic.videoId}
+                                        title={topMusic.title}/>
+                            </div>
+                            <div className={"info-box"}>
+                                <p style={{color:COLOR.PRIMARY_GOLD, fontWeight:"bold"}}>{topMusic.title}</p>
+                                <p style={{fontSize:"15px", fontWeight:"lighter"}}>{topMusic.singer}</p>
+                            </div>
+                            <div className={"vote-box"}>
                                 <Vote>
                                     <ThumbUp onClick={() => vote("like", topMusic.id)}/>
                                     <span>{topMusic.likeCount}</span>
@@ -96,16 +100,23 @@ function Chart(props) {
                 })}
             </ChartTable>
             <ChartTable>
-                <h3>신규 진입 대기열</h3>
-                {chart.wantedMusics.map((wantedMusic, idx) => {
+                <h3>How About THIS SHIT?</h3>
+                {chart.wantedMusics.length ? chart.wantedMusics.map((wantedMusic, idx) => {
                     return (
                         <ChartRow key={idx}>
-                            <iframe width={"200px"} height={"100px"}
-                                    src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
-                                    title={wantedMusic.title}/>
-                            <p>{wantedMusic.title}</p>
-                            <p>{wantedMusic.singer}</p>
-                            <div>
+                            <div className={"rank-box"}>
+                            대기
+                            </div>
+                            <div className={"iframe-box"}>
+                                <iframe width={"120px"} height={"80px"}
+                                        src={"https://www.youtube.com/embed/" + wantedMusic.videoId}
+                                        title={wantedMusic.title}/>
+                            </div>
+                            <div className={"info-box"}>
+                                <p style={{color:COLOR.PRIMARY_GOLD, fontWeight:"bold"}}>{wantedMusic.title}</p>
+                                <p style={{fontSize:"15px", fontWeight:"lighter"}}>{wantedMusic.singer}</p>
+                            </div>
+                            <div className={"vote-box"}>
                                 <Vote>
                                     <ThumbUp onClick={() => vote("like", wantedMusic.id)}/>
                                     <span>{wantedMusic.likeCount}</span>
@@ -117,46 +128,86 @@ function Chart(props) {
                             </div>
                         </ChartRow>
                     )
-                })}
+                }) : <p style={{color: COLOR.PRIMARY_GOLD}}>"please introduce new shit"</p>}
             </ChartTable>
             <WantedForm/>
-        </ChartBackground>
+        </ContentSection>
     );
 }
 
-const ChartBackground = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: ${STYLE.MIN_WIDTH};
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
+const ContentSection = styled.div`
+  background-color: ${COLOR.PRIMARY_BLACK};
+  width: ${STYLE.MIN_WIDTH};
+  height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  color: white;
+
+  h1 {
+    color: ${COLOR.PRIMARY_GOLD};
+    font-size: 40px;
+    height: 40px;
+  }
+
+  p {
+    font-size: 20px;
+  }
 `
 
 const ChartTable = styled.div`
-  width: ${STYLE.MIN_WIDTH};
+  width: calc(${STYLE.MIN_WIDTH} - 20px);
+  margin: 10px auto;
+  background-color: ${COLOR.SECONDARY_BLACK};
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  border: 1px solid darkgrey;
-  margin-bottom: 20px;
-  padding: 10px 0;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  
+  h3 {
+    color: ${COLOR.COMPONENT_RED};
+  }
 `
 
 const ChartRow = styled.div`
-  width: calc(${STYLE.MIN_WIDTH} - 10px);
+  width: calc(${STYLE.MIN_WIDTH} - 20px);
+  height: ${STYLE.MUSIC_ROW_HEIGHT};
   display: flex;
   align-items: center;
-  border: 1px solid darkgrey;
-  justify-content: space-around;
-  background-color: slategrey;
-  border-radius: 10px;
+  border-top: 0.5px solid darkgrey;
+
+  &:last-child {
+    border-bottom: 0.5px solid darkgrey;
+  }
+  
+  &:hover{
+    background-color: darkgrey;
+  }
+  
+  .rank-box {
+    width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.12);
+    text-align: center;
+    p {
+      font-size: 30px;
+    }
+  }
+  
+  .iframe-box {
+    width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.33);
+  }
+  
+  .info-box {
+    width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.33);
+    padding-left: 5px;
+  }
+  
+  .vote-box {
+    width: calc((${STYLE.MIN_WIDTH} - 20px) * 0.18);
+  }
 `
 
 const Vote = styled.div`
-  width: 80px;
-  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,6 +215,7 @@ const Vote = styled.div`
   svg {
     cursor: pointer;
     transform: scale(0.6);
+    fill: white;
   }
 
   svg:hover {
@@ -173,6 +225,7 @@ const Vote = styled.div`
 
 const WaveIndicator = styled.p`
   color: ${props => props.color};
+  font-size: 15px !important;
 `
 
 export default Chart;
