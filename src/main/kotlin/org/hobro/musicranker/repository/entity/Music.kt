@@ -43,9 +43,9 @@ data class Music(
     var dislikeCount: Long = 0
 ) {
     companion object {
-        fun of(musicRequest: MusicRequest, chart: Chart): Music {
+        fun of(musicRequest: MusicRequest, videoId: String, chart: Chart): Music {
             return Music(
-                videoId = musicRequest.videoId,
+                videoId = videoId,
                 title = musicRequest.title,
                 singer = musicRequest.singer,
                 chartId = chart.id

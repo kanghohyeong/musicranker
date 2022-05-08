@@ -7,7 +7,7 @@ function WantedForm(props) {
     const {chartId} = useParams();
 
     const [wantedMusic, setWantedMusic] = useState(
-        {singer: "", title: "", videoId: ""});
+        {singer: "", title: ""});
 
     const addWantedMusic = (e) => {
         e.preventDefault();
@@ -49,12 +49,6 @@ function WantedForm(props) {
                     setWantedMusic({...wantedMusic, title: e.target.value})
                 }}/>
             </InputContainer>
-            <InputContainer>
-                <label>Video ID</label>
-                <input type={"text"} value={wantedMusic.videoId} onChange={(e) => {
-                    setWantedMusic({...wantedMusic, videoId: e.target.value})
-                }}/>
-            </InputContainer>
             <div onClick={(e) => addWantedMusic(e)}
                  style={{
                      width: "100px",
@@ -66,10 +60,6 @@ function WantedForm(props) {
                      cursor: "pointer"
                  }}>ADD
             </div>
-            <p style={{fontSize: "8px"}}>What is Video ID? :
-                https://www.youtube.com/watch?v=<strong
-                    style={{color: "red"}}>G1JQd78ZJ2I</strong>
-            </p>
         </PostForm>
     );
 }
