@@ -17,7 +17,6 @@ function ChartList(props) {
                 if (res.ok) {
                     res.json().then(response => {
                         setChartList(response);
-                        console.log(response)
                     })
                 } else {
                     alert("서버 애러. 연락 바랍니다")

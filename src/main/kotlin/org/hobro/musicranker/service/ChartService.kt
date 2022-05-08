@@ -32,23 +32,25 @@ class ChartService(
                 .setApplicationName("musicranker")
                 .build()
 
-        val searchResults = youtube.search().list("id").setKey(youtubeApiKey)
+        val search = youtube.search().list("id").setKey(youtubeApiKey)
             .setQ(musicRequest.toQuery()).setType("video").setVideoEmbeddable("true").setMaxResults(10)
-            .execute().items
 
-        if (searchResults.isEmpty()) {
-            throw Exception("NO SUCH VIDEO")
+        val searchResults = search.execute()
+
+        with(searchResults) {
+            if (items.isEmpty()) throw Exception("NO SUCH VIDEO")
+
+
+            val videoId = try {
+                items.first { isEmbeddable(it.id.videoId) }.id.videoId
+            } catch (e: Exception) {
+                val nextSearchResult = search.setPageToken(nextPageToken).execute()
+                nextSearchResult.items.firstOrNull { isEmbeddable(it.id.videoId) }?.id?.videoId ?: "xsoQTMjxoXU"
+            }
+
+            musicRepository.save(Music.of(musicRequest, videoId, chart))
+            chartRepository.save(chart)
         }
-
-        val videoId = searchResults.first { res ->
-            val restTemplate = RestTemplate()
-            val embedResponse =
-                restTemplate.getForEntity("https://www.youtube.com/embed/${res.id.videoId}", String::class.java)
-            !(embedResponse.body?.contains("UNPLAYABLE") ?: false)
-        }.id.videoId
-
-        musicRepository.save(Music.of(musicRequest, videoId, chart))
-        chartRepository.save(chart)
     }
 
     fun getChart(chartId: Long): ChartDTO {
@@ -65,6 +67,13 @@ class ChartService(
 
     fun getChartList(): List<Chart> {
         return chartRepository.findAll()
+    }
+
+    private fun isEmbeddable(videoId: String): Boolean {
+        val restTemplate = RestTemplate()
+        val embedResponse =
+            restTemplate.getForEntity("https://www.youtube.com/embed/${videoId}", String::class.java)
+        return !(embedResponse.body?.contains("UNPLAYABLE") ?: true)
     }
 
 }
