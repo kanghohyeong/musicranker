@@ -13,6 +13,7 @@ import org.hobro.musicranker.repository.entity.Chart
 import org.hobro.musicranker.repository.entity.Music
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import javax.transaction.Transactional
 
 @Service
@@ -32,14 +33,19 @@ class ChartService(
                 .build()
 
         val searchResults = youtube.search().list("id").setKey(youtubeApiKey)
-            .setQ(musicRequest.toQuery()).setType("video").setVideoEmbeddable("true")
+            .setQ(musicRequest.toQuery()).setType("video").setVideoEmbeddable("true").setMaxResults(10)
             .execute().items
 
         if (searchResults.isEmpty()) {
             throw Exception("NO SUCH VIDEO")
         }
 
-        val videoId = searchResults.first().id.videoId
+        val videoId = searchResults.first { res ->
+            val restTemplate = RestTemplate()
+            val embedResponse =
+                restTemplate.getForEntity("https://www.youtube.com/embed/${res.id.videoId}", String::class.java)
+            !(embedResponse.body?.contains("UNPLAYABLE") ?: false)
+        }.id.videoId
 
         musicRepository.save(Music.of(musicRequest, videoId, chart))
         chartRepository.save(chart)
